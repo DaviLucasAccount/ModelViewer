@@ -33,3 +33,13 @@ target_link_libraries(${PROJECT_NAME}
         glad::glad
         OpenGL::GL
 )
+
+add_custom_target(resources ALL
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/bin/resources
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${PROJECT_SOURCE_DIR}/resources
+            ${CMAKE_BINARY_DIR}/bin/resources
+    COMMENT "Copying resources into binary directory"
+)
+
+add_dependencies(${PROJECT_NAME} resources)
