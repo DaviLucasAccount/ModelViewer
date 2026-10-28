@@ -15,6 +15,8 @@ add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
 add_subdirectory(external/glad EXCLUDE_FROM_ALL)
 
 set(SOURCES
+    src/application.cpp
+
     src/main.cpp
 )
 
