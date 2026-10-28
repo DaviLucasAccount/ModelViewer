@@ -1,0 +1,18 @@
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+UseTab: Never
+
+ColumnLimit: 120
+
+AlignAfterOpenBracket: BlockIndent
+
+AllowShortFunctionsOnASingleLine: Empty
+
+PointerAlignment: Right
+
+BinPackParameters: false
+BinPackArguments: false
+
+FixNamespaceComments: false
+NamespaceIndentation: All
