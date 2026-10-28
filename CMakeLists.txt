@@ -9,7 +9,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+find_package(OpenGL REQUIRED)
+
 add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
+add_subdirectory(external/glad EXCLUDE_FROM_ALL)
 
 set(SOURCES
     src/main.cpp
@@ -25,4 +28,6 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL3::SDL3
+        glad::glad
+        OpenGL::GL
 )
