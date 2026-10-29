@@ -6,6 +6,7 @@
 
 #include "appContext.hpp"
 #include "application.hpp"
+#include "shader.hpp"
 
 Application::Application() {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -33,6 +34,10 @@ Application::Application() {
         throw std::runtime_error("gladLoadGLLoader failed");
 
     SDL_SetWindowPosition(m_context.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+    // Shaders
+    Shader shader("default.vert", "default.frag");
+    SDL_Log("%u", shader.ID);
 }
 Application::~Application() {
     SDL_GL_DestroyContext(m_context.glcontext);

@@ -16,6 +16,7 @@ add_subdirectory(external/glad EXCLUDE_FROM_ALL)
 
 set(SOURCES
     src/application.cpp
+    src/shader.cpp
 
     src/main.cpp
 )
