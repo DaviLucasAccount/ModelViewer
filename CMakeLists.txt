@@ -18,6 +18,9 @@ add_subdirectory(external/glad EXCLUDE_FROM_ALL)
 set(SOURCES
     src/application.cpp
     src/shader.cpp
+    src/vertexArray.cpp
+    src/vertexBuffer.cpp
+    src/indexBuffer.cpp
 
     src/main.cpp
 )

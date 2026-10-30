@@ -1,14 +1,18 @@
 #include <format>
 #include <memory>
 #include <stdexcept>
+#include <vector>
 
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 
 #include "appContext.hpp"
 #include "application.hpp"
+#include "indexBuffer.hpp"
 #include "shader.hpp"
 #include "vertex.hpp"
+#include "vertexArray.hpp"
+#include "vertexBuffer.hpp"
 
 constexpr Vertex vertices[] = {
     {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // A
@@ -47,33 +51,34 @@ Application::Application() {
     // OpenGL
     m_context.shader = std::make_unique<Shader>("default.vert", "default.frag");
 
-    glGenVertexArrays(1, &m_context.VAO);
-    glGenBuffers(1, &m_context.VBO);
-    glGenBuffers(1, &m_context.EBO);
+    m_context.VAO = std::make_unique<VertexArray>();
+    m_context.VAO->Bind();
 
-    glBindVertexArray(m_context.VAO);
+    m_context.VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+    m_context.EBO = std::make_unique<IndexBuffer>(indices, sizeof(indices));
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_context.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    std::vector<VertexArrayAttribute> attributes(2);
+    attributes[0].index = 0;
+    attributes[0].size = 3;
+    attributes[0].type = GL_FLOAT;
+    attributes[0].normalized = GL_FALSE;
+    attributes[0].stride = sizeof(Vertex);
+    attributes[0].pointer = (void *)offsetof(Vertex, position);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_context.EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    attributes[1].index = 1;
+    attributes[1].size = 3;
+    attributes[1].type = GL_FLOAT;
+    attributes[1].normalized = GL_FALSE;
+    attributes[1].stride = sizeof(Vertex);
+    attributes[1].pointer = (void *)offsetof(Vertex, color);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
-    glEnableVertexAttribArray(0);
+    m_context.VAO->SetAttributes(attributes);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    m_context.VAO->Unbind();
+    m_context.VBO->Unbind();
+    m_context.EBO->Unbind();
 }
 Application::~Application() {
-    glDeleteVertexArrays(1, &m_context.VAO);
-    glDeleteBuffers(1, &m_context.VBO);
-    glDeleteBuffers(1, &m_context.EBO);
-
     SDL_GL_DestroyContext(m_context.glcontext);
     SDL_DestroyWindow(m_context.window);
 
@@ -98,7 +103,7 @@ void Application::Render() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_context.shader->Bind();
-    glBindVertexArray(m_context.VAO);
+    m_context.VAO->Bind();
 
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 

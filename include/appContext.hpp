@@ -6,16 +6,19 @@
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 
+#include "indexBuffer.hpp"
 #include "shader.hpp"
+#include "vertexArray.hpp"
+#include "vertexBuffer.hpp"
 
 struct AppContext {
     SDL_Window *window = nullptr;
     SDL_GLContext glcontext = nullptr;
 
     std::unique_ptr<Shader> shader = nullptr;
-    GLuint VAO = 0;
-    GLuint VBO = 0;
-    GLuint EBO = 0;
+    std::unique_ptr<VertexArray> VAO = nullptr;
+    std::unique_ptr<VertexBuffer> VBO = nullptr;
+    std::unique_ptr<IndexBuffer> EBO = nullptr;
 };
 
 #endif
