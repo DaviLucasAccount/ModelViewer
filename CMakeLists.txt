@@ -22,6 +22,7 @@ set(SOURCES
     src/vertexArray.cpp
     src/vertexBuffer.cpp
     src/indexBuffer.cpp
+    src/model.cpp
 
     src/main.cpp
 )

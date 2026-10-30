@@ -1,6 +1,7 @@
 #include <format>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #include <SDL3/SDL.h>
@@ -9,6 +10,7 @@
 #include "appContext.hpp"
 #include "application.hpp"
 #include "indexBuffer.hpp"
+#include "model.hpp"
 #include "shader.hpp"
 #include "vertex.hpp"
 #include "vertexArray.hpp"
@@ -47,6 +49,23 @@ Application::Application() {
         throw std::runtime_error("gladLoadGLLoader failed");
 
     SDL_SetWindowPosition(m_context.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+    // Model
+    const char *basepath = SDL_GetBasePath();
+    if (!basepath) {
+        constexpr std::string_view err = "SDL_GetBasePath failed: {}";
+        throw std::runtime_error(std::format(err, SDL_GetError()));
+    }
+
+    std::string fullpath = std::format("{}resources/models/cube.obj", basepath);
+    m_context.model = std::make_unique<Model>(fullpath.c_str());
+    for (const Vertex &v : m_context.model->vertices) {
+        SDL_Log("%.2f %.2f %.2f", v.position.x, v.position.y, v.position.z);
+        SDL_Log("%.2f %.2f %.2f", v.color.r, v.color.g, v.color.b);
+    }
+    for (const GLuint &i : m_context.model->indices) {
+        SDL_Log("%u", i);
+    }
 
     // OpenGL
     m_context.shader = std::make_unique<Shader>("default.vert", "default.frag");

@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 
 #include "indexBuffer.hpp"
+#include "model.hpp"
 #include "shader.hpp"
 #include "vertexArray.hpp"
 #include "vertexBuffer.hpp"
@@ -19,6 +20,8 @@ struct AppContext {
     std::unique_ptr<VertexArray> VAO = nullptr;
     std::unique_ptr<VertexBuffer> VBO = nullptr;
     std::unique_ptr<IndexBuffer> EBO = nullptr;
+
+    std::unique_ptr<Model> model = nullptr;
 };
 
 #endif
