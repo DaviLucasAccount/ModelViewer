@@ -13,6 +13,7 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
 add_subdirectory(external/glm EXCLUDE_FROM_ALL)
+add_subdirectory(external/assimp EXCLUDE_FROM_ALL)
 add_subdirectory(external/glad EXCLUDE_FROM_ALL)
 
 set(SOURCES
@@ -35,8 +36,9 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL3::SDL3
-        glad::glad
         glm::glm
+        assimp::assimp
+        glad::glad
         OpenGL::GL
 )
 
