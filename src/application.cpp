@@ -16,7 +16,7 @@
 #include "vertexArray.hpp"
 #include "vertexBuffer.hpp"
 
-Application::Application() {
+Application::Application(const char *name) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         constexpr std::string_view err = "SDL_Init failed: {}";
         throw std::runtime_error(std::format(err, SDL_GetError()));
@@ -57,7 +57,7 @@ Application::Application() {
     }
 
     std::string fullpath = std::format("{}resources/models/cube.obj", basepath);
-    m_context.model = std::make_unique<Model>(fullpath.c_str());
+    m_context.model = std::make_unique<Model>(name ? name : fullpath.c_str());
 
     // OpenGL
     m_context.shader = std::make_unique<Shader>("default.vert", "default.frag");

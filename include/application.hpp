@@ -10,7 +10,7 @@ class Application {
   public:
     bool running = true;
 
-    Application();
+    Application(const char *name);
     ~Application();
 
     void Tick();

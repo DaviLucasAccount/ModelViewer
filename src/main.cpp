@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) {
     try {
-        Application app;
+        Application app(argv[1]);
         while (app.running)
             app.Tick();
     } catch (const std::exception &e) {
