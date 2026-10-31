@@ -24,6 +24,8 @@ struct AppContext {
 
     std::unique_ptr<Camera> camera = nullptr;
     std::unique_ptr<Model> model = nullptr;
+
+    Uint64 lastTick = 0;
 };
 
 #endif

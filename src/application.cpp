@@ -112,7 +112,30 @@ void Application::Input() {
             running = false;
     }
 }
-void Application::Update() {}
+void Application::Update() {
+    Uint64 currTick = SDL_GetTicks();
+    Uint64 deltaTime = currTick - m_context.lastTick;
+    m_context.lastTick = currTick;
+
+    const bool *keyboardState = SDL_GetKeyboardState(nullptr);
+    const float moveSpeed = (deltaTime / 1000.0f) * 8.0f;
+    if (keyboardState[SDL_SCANCODE_W]) {
+        m_context.camera->position.y += moveSpeed;
+        m_context.camera->target.y += moveSpeed;
+    }
+    if (keyboardState[SDL_SCANCODE_A]) {
+        m_context.camera->position.x -= moveSpeed;
+        m_context.camera->target.x -= moveSpeed;
+    }
+    if (keyboardState[SDL_SCANCODE_S]) {
+        m_context.camera->position.y -= moveSpeed;
+        m_context.camera->target.y -= moveSpeed;
+    }
+    if (keyboardState[SDL_SCANCODE_D]) {
+        m_context.camera->position.x += moveSpeed;
+        m_context.camera->target.x += moveSpeed;
+    }
+}
 void Application::Render() {
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 mvp = m_context.camera->GetMVP(model);
