@@ -13,16 +13,8 @@
 #include "indexBuffer.hpp"
 #include "model.hpp"
 #include "shader.hpp"
-#include "vertex.hpp"
 #include "vertexArray.hpp"
 #include "vertexBuffer.hpp"
-
-constexpr Vertex vertices[] = {
-    {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}}, // A
-    {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},  // B
-    {{0.0f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}    // C
-};
-constexpr GLuint indices[] = {0, 1, 2};
 
 Application::Application() {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -66,13 +58,6 @@ Application::Application() {
 
     std::string fullpath = std::format("{}resources/models/cube.obj", basepath);
     m_context.model = std::make_unique<Model>(fullpath.c_str());
-    for (const Vertex &v : m_context.model->vertices) {
-        SDL_Log("%.2f %.2f %.2f", v.position.x, v.position.y, v.position.z);
-        SDL_Log("%.2f %.2f %.2f", v.color.r, v.color.g, v.color.b);
-    }
-    for (const GLuint &i : m_context.model->indices) {
-        SDL_Log("%u", i);
-    }
 
     // OpenGL
     m_context.shader = std::make_unique<Shader>("default.vert", "default.frag");

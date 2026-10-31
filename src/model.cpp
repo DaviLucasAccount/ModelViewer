@@ -6,9 +6,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "model.hpp"
-#include "vertex.hpp"
 
 Model::Model(const char *name) {
     Assimp::Importer importer;
