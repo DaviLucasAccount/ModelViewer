@@ -9,6 +9,7 @@
 
 #include "appContext.hpp"
 #include "application.hpp"
+#include "camera.hpp"
 #include "indexBuffer.hpp"
 #include "model.hpp"
 #include "shader.hpp"
@@ -32,12 +33,15 @@ Application::Application() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
     m_context.window = SDL_CreateWindow("ModelViewer", 640, 360, SDL_WINDOW_OPENGL);
     if (!m_context.window) {
         constexpr std::string_view err = "SDL_CreateWindow failed: {}";
         throw std::runtime_error(std::format(err, SDL_GetError()));
     }
+
+    SDL_SetWindowPosition(m_context.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     m_context.glcontext = SDL_GL_CreateContext(m_context.window);
     if (!m_context.glcontext) {
@@ -48,9 +52,12 @@ Application::Application() {
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         throw std::runtime_error("gladLoadGLLoader failed");
 
-    SDL_SetWindowPosition(m_context.window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    glEnable(GL_DEPTH_TEST);
 
     // Model
+    m_context.camera = std::make_unique<Camera>();
+    m_context.camera->position.z += 10;
+
     const char *basepath = SDL_GetBasePath();
     if (!basepath) {
         constexpr std::string_view err = "SDL_GetBasePath failed: {}";
@@ -73,8 +80,12 @@ Application::Application() {
     m_context.VAO = std::make_unique<VertexArray>();
     m_context.VAO->Bind();
 
-    m_context.VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
-    m_context.EBO = std::make_unique<IndexBuffer>(indices, sizeof(indices));
+    m_context.VBO = std::make_unique<VertexBuffer>(
+        m_context.model->vertices.data(), m_context.model->vertices.size() * sizeof(Vertex)
+    );
+    m_context.EBO = std::make_unique<IndexBuffer>(
+        m_context.model->indices.data(), m_context.model->indices.size() * sizeof(GLuint)
+    );
 
     std::vector<VertexArrayAttribute> attributes(2);
     attributes[0].index = 0;
@@ -118,13 +129,19 @@ void Application::Input() {
 }
 void Application::Update() {}
 void Application::Render() {
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 mvp = m_context.camera->GetMVP(model);
+
     glClearColor(0.04f, 0.04f, 0.04f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_context.shader->Bind();
+    GLint mvpLoc = m_context.shader->GetUniformLocation("uMVP");
+    m_context.shader->SetUniformMat4(mvpLoc, mvp);
+
     m_context.VAO->Bind();
 
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, m_context.model->indices.size(), GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(m_context.window);
     SDL_Delay(16);

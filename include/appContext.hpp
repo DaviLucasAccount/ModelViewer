@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 
+#include "camera.hpp"
 #include "indexBuffer.hpp"
 #include "model.hpp"
 #include "shader.hpp"
@@ -21,6 +22,7 @@ struct AppContext {
     std::unique_ptr<VertexBuffer> VBO = nullptr;
     std::unique_ptr<IndexBuffer> EBO = nullptr;
 
+    std::unique_ptr<Camera> camera = nullptr;
     std::unique_ptr<Model> model = nullptr;
 };
 

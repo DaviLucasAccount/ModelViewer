@@ -23,6 +23,7 @@ set(SOURCES
     src/vertexBuffer.cpp
     src/indexBuffer.cpp
     src/model.cpp
+    src/camera.cpp
 
     src/main.cpp
 )

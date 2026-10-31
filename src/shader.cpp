@@ -84,6 +84,13 @@ Shader::~Shader() {
     glDeleteProgram(ID);
 }
 
+GLint Shader::GetUniformLocation(const char *name) {
+    return glGetUniformLocation(ID, name);
+}
+void Shader::SetUniformMat4(GLint loc, glm::mat4 &value) {
+    glUniformMatrix4fv(loc, 1, GL_FALSE, &value[0][0]);
+}
+
 void Shader::Bind() {
     glUseProgram(ID);
 }

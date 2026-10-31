@@ -2,6 +2,7 @@
 #define SHADER_HPP
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 class Shader {
   private:
@@ -14,6 +15,9 @@ class Shader {
 
     Shader(const char *vertexName, const char *fragmentName);
     ~Shader();
+
+    GLint GetUniformLocation(const char *name);
+    void SetUniformMat4(GLint loc, glm::mat4 &value);
 
     void Bind();
     void Unbind();
