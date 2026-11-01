@@ -12,6 +12,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
+add_subdirectory(external/SDL_image EXCLUDE_FROM_ALL)
 add_subdirectory(external/glm EXCLUDE_FROM_ALL)
 add_subdirectory(external/assimp EXCLUDE_FROM_ALL)
 add_subdirectory(external/glad EXCLUDE_FROM_ALL)
@@ -38,6 +39,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL3::SDL3
+        SDL3_image::SDL3_image
         glm::glm
         assimp::assimp
         glad::glad
