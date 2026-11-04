@@ -29,7 +29,11 @@ set(SOURCES
     src/main.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+if(WIN32)
+    add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
+else()
+    add_executable(${PROJECT_NAME} ${SOURCES})
+endif()
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
