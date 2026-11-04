@@ -17,7 +17,8 @@ class Shader {
     ~Shader();
 
     GLint GetUniformLocation(const char *name);
-    void SetUniformMat4(GLint loc, glm::mat4 &value);
+    void SetUniformMat4(const char *name, glm::mat4 value);
+    void SetUniform1i(const char *name, GLint value);
 
     void Bind();
     void Unbind();

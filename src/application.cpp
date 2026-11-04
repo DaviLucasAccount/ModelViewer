@@ -45,6 +45,8 @@ Application::Application(const char *name) {
         throw std::runtime_error("gladLoadGLLoader failed");
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Model
     m_context.camera = std::make_unique<Camera>();
@@ -72,7 +74,7 @@ Application::Application(const char *name) {
         m_context.model->indices.data(), m_context.model->indices.size() * sizeof(GLuint)
     );
 
-    std::vector<VertexArrayAttribute> attributes(2);
+    std::vector<VertexArrayAttribute> attributes(3);
     attributes[0].index = 0;
     attributes[0].size = 3;
     attributes[0].type = GL_FLOAT;
@@ -86,6 +88,13 @@ Application::Application(const char *name) {
     attributes[1].normalized = GL_FALSE;
     attributes[1].stride = sizeof(Vertex);
     attributes[1].pointer = (void *)offsetof(Vertex, color);
+
+    attributes[2].index = 2;
+    attributes[2].size = 2;
+    attributes[2].type = GL_FLOAT;
+    attributes[2].normalized = GL_FALSE;
+    attributes[2].stride = sizeof(Vertex);
+    attributes[2].pointer = (void *)offsetof(Vertex, texCoords);
 
     m_context.VAO->SetAttributes(attributes);
 
@@ -144,12 +153,22 @@ void Application::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_context.shader->Bind();
-    GLint mvpLoc = m_context.shader->GetUniformLocation("uMVP");
-    m_context.shader->SetUniformMat4(mvpLoc, mvp);
+    m_context.shader->SetUniformMat4("uMVP", mvp);
+    m_context.shader->SetUniform1i("uTex0", 0);
 
     m_context.VAO->Bind();
 
-    glDrawElements(GL_TRIANGLES, m_context.model->indices.size(), GL_UNSIGNED_INT, 0);
+    for (const auto &mesh : m_context.model->meshes) {
+        bool hasTexture = (mesh.texture < m_context.model->textures.size());
+        m_context.shader->SetUniform1i("uHasTexture", hasTexture ? 1 : 0);
+
+        if (hasTexture) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, m_context.model->textures[mesh.texture]);
+        }
+
+        glDrawElements(GL_TRIANGLES, (GLsizei)mesh.count, GL_UNSIGNED_INT, (void *)(mesh.offset * sizeof(Index)));
+    }
 
     SDL_GL_SwapWindow(m_context.window);
     SDL_Delay(16);
