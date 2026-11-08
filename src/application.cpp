@@ -29,7 +29,7 @@ Application::Application(const char *name) {
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
-    m_context.window = SDL_CreateWindow("ModelViewer", 640, 360, SDL_WINDOW_OPENGL);
+    m_context.window = SDL_CreateWindow("ModelViewer", 640, 360, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (!m_context.window) {
         constexpr std::string_view err = "SDL_CreateWindow failed: {}";
         throw std::runtime_error(std::format(err, SDL_GetError()));
@@ -121,8 +121,18 @@ void Application::Input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         m_context.camera->Input(&event);
-        if (event.type == SDL_EVENT_QUIT)
+        if (event.type == SDL_EVENT_QUIT) {
             running = false;
+        } else if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+            int windowW = event.window.data1;
+            int windowH = event.window.data2;
+            glViewport(0, 0, windowW, windowH);
+
+            if (windowH > 0) {
+                float aspect = windowW / 1.0f / windowH;
+                m_context.camera->aspect = aspect;
+            }
+        }
     }
 }
 void Application::Update() {
