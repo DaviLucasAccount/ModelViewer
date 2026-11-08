@@ -120,6 +120,7 @@ void Application::Tick() {
 void Application::Input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+        m_context.camera->Input(&event);
         if (event.type == SDL_EVENT_QUIT)
             running = false;
     }
@@ -129,24 +130,7 @@ void Application::Update() {
     Uint64 deltaTime = currTick - m_context.lastTick;
     m_context.lastTick = currTick;
 
-    const bool *keyboardState = SDL_GetKeyboardState(nullptr);
-    const float moveSpeed = (deltaTime / 1000.0f) * 8.0f;
-    if (keyboardState[SDL_SCANCODE_W]) {
-        m_context.camera->position.y += moveSpeed;
-        m_context.camera->target.y += moveSpeed;
-    }
-    if (keyboardState[SDL_SCANCODE_A]) {
-        m_context.camera->position.x -= moveSpeed;
-        m_context.camera->target.x -= moveSpeed;
-    }
-    if (keyboardState[SDL_SCANCODE_S]) {
-        m_context.camera->position.y -= moveSpeed;
-        m_context.camera->target.y -= moveSpeed;
-    }
-    if (keyboardState[SDL_SCANCODE_D]) {
-        m_context.camera->position.x += moveSpeed;
-        m_context.camera->target.x += moveSpeed;
-    }
+    m_context.camera->Update(deltaTime);
 }
 void Application::Render() {
     glm::mat4 model = glm::mat4(1.0f);
