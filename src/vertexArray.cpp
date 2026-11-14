@@ -1,5 +1,3 @@
-#include <vector>
-
 #include <glad/glad.h>
 
 #include "vertexArray.hpp"
@@ -11,13 +9,11 @@ VertexArray::~VertexArray() {
     glDeleteVertexArrays(1, &ID);
 }
 
-void VertexArray::SetAttributes(std::vector<VertexArrayAttribute> attributes) {
-    for (const VertexArrayAttribute attribute : attributes) {
-        glVertexAttribPointer(
-            attribute.index, attribute.size, attribute.type, attribute.normalized, attribute.stride, attribute.pointer
-        );
-        glEnableVertexAttribArray(attribute.index);
-    }
+void VertexArray::SetAttribute(
+    GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer
+) {
+    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+    glEnableVertexAttribArray(index);
 }
 
 void VertexArray::Bind() {

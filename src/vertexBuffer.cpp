@@ -2,13 +2,20 @@
 
 #include "vertexBuffer.hpp"
 
-VertexBuffer::VertexBuffer(const void *data, GLsizeiptr size) {
+VertexBuffer::VertexBuffer() {
     glGenBuffers(1, &ID);
-    glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
 VertexBuffer::~VertexBuffer() {
     glDeleteBuffers(1, &ID);
+}
+
+void VertexBuffer::SetBufferSize(GLsizeiptr size) {
+    glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+}
+void VertexBuffer::SetBufferData(GLintptr offset, GLsizeiptr size, const void *data) {
+    glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
 void VertexBuffer::Bind() {

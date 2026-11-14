@@ -7,8 +7,11 @@ class VertexBuffer {
   public:
     GLuint ID;
 
-    VertexBuffer(const void *data, GLsizeiptr size);
+    VertexBuffer();
     ~VertexBuffer();
+
+    void SetBufferSize(GLsizeiptr size);
+    void SetBufferData(GLintptr offset, GLsizeiptr size, const void *data);
 
     void Bind();
     void Unbind();

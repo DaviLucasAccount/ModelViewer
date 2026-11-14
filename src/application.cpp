@@ -74,36 +74,19 @@ Application::Application(const char *name) {
     m_context.VAO = std::make_unique<VertexArray>();
     m_context.VAO->Bind();
 
-    m_context.VBO = std::make_unique<VertexBuffer>(
-        m_context.model->vertices.data(), m_context.model->vertices.size() * sizeof(Vertex)
-    );
-    m_context.EBO = std::make_unique<IndexBuffer>(
-        m_context.model->indices.data(), m_context.model->indices.size() * sizeof(GLuint)
-    );
+    GLsizeiptr vsize = m_context.model->vertices.size() * sizeof(Vertex);
+    m_context.VBO = std::make_unique<VertexBuffer>();
+    m_context.VBO->SetBufferSize(vsize);
+    m_context.VBO->SetBufferData(0, vsize, m_context.model->vertices.data());
 
-    std::vector<VertexArrayAttribute> attributes(3);
-    attributes[0].index = 0;
-    attributes[0].size = 3;
-    attributes[0].type = GL_FLOAT;
-    attributes[0].normalized = GL_FALSE;
-    attributes[0].stride = sizeof(Vertex);
-    attributes[0].pointer = (void *)offsetof(Vertex, position);
+    GLsizeiptr isize = m_context.model->indices.size() * sizeof(Index);
+    m_context.EBO = std::make_unique<IndexBuffer>();
+    m_context.EBO->SetBufferSize(isize);
+    m_context.EBO->SetBufferData(0, isize, m_context.model->indices.data());
 
-    attributes[1].index = 1;
-    attributes[1].size = 3;
-    attributes[1].type = GL_FLOAT;
-    attributes[1].normalized = GL_FALSE;
-    attributes[1].stride = sizeof(Vertex);
-    attributes[1].pointer = (void *)offsetof(Vertex, color);
-
-    attributes[2].index = 2;
-    attributes[2].size = 2;
-    attributes[2].type = GL_FLOAT;
-    attributes[2].normalized = GL_FALSE;
-    attributes[2].stride = sizeof(Vertex);
-    attributes[2].pointer = (void *)offsetof(Vertex, texCoords);
-
-    m_context.VAO->SetAttributes(attributes);
+    m_context.VAO->SetAttribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
+    m_context.VAO->SetAttribute(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
+    m_context.VAO->SetAttribute(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texCoords));
 
     m_context.VAO->Unbind();
     m_context.VBO->Unbind();

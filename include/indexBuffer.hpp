@@ -7,8 +7,11 @@ class IndexBuffer {
   public:
     GLuint ID;
 
-    IndexBuffer(const void *data, GLsizeiptr size);
+    IndexBuffer();
     ~IndexBuffer();
+
+    void SetBufferSize(GLsizeiptr size);
+    void SetBufferData(GLintptr offset, GLsizeiptr size, const void *data);
 
     void Bind();
     void Unbind();
